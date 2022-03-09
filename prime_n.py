@@ -3,7 +3,11 @@
 """
 Created on Wed Mar  9 13:34:37 2022
 
-@author: arman
+This script prints out the first n prime numbers
+The script is optimised for the number of trials before identifying a 
+number as prime
+
+Script by Arman Hassanniakalager GitHub @hkalager
 """
 from datetime import datetime
 t0=datetime.now()
