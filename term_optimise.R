@@ -8,12 +8,12 @@
 
 # The objective function is to maximize the correlation between the
 # constructed term of portfolio relative to a reference curve while penalising 
-# deviation from observed values.
-# The penalty term is given by variable "penalty_factor"
+# deviation from observed values and projected trajectory.
+# The penalty terms are given by variables "penalty_observed" and "penalty_forecast"
 
 ## Inputs
 # a csv file with all necessary info 
-# variable "penalty_factor" set by practitioner
+# variables "penalty_observed" and "penalty_forecast" are set by practitioner
 
 ## Output
 
@@ -29,7 +29,8 @@
 # Key inputs
 setwd('~/Documents/GitHub/misc') # amend this as you see fit
 term_db <- read.csv('term_quotes.csv') # the database
-penalty_factor <- 1 # Critical to tune the shape of the predicted path 
+penalty_observed <- 1 # Penalty term for observed values
+penalty_forecast <- .5 # Penalty term for future values
 # First replicate the series based on target series variations from the provided 
 # starting points 
 library(lubridate)
@@ -91,8 +92,8 @@ fun1 <- function (x)
 { y=term_db$Reference.curve
   x1 <- x
   return (-cor(x1,y)+1000*(abs(mean(x1[1:2])-mean(x0[1:2])))+
-            penalty_factor*(abs(mean(x1[first_na:last_observed_idx])-mean0))+
-            penalty_factor/2*(abs(mean(x1[(last_observed_idx+1):size_ser])-mean1)))
+            penalty_observed*(abs(mean(x1[first_na:last_observed_idx])-mean0))+
+            penalty_forecast*(abs(mean(x1[(last_observed_idx+1):size_ser])-mean1)))
 }
 
 res <- optim(x0,fun1)
