@@ -1,20 +1,35 @@
-# A sample R script for forecasting a term-structure in a random financial market
+## Overview 
+# A sample R script to forecast a term structure for a hypothetical asset
+
 # This code tracks and replicates a target term structure provided for time 
 # horizons of next month to several years ahead. The adjustment is deemed 
-# necessary due to market prices over certain periods. See Wiki tab for more 
-# information on the aim and scope of this project.
+# necessary due to realised market prices with respect to forward contracts. 
+# See Wiki tab for more information on the aim and scope of this project.
 
-# The objective function is defined to maximize the correlation between the
-# constructed curve and reference curve while penalising deviation from Mean 
+# The objective function is to maximize the correlation between the
+# constructed term of portfolio relative to a reference curve while penalising 
+# deviation from observed values.
 # The penalty term is given by variable "penalty_factor"
 
+## Inputs
+# a csv file with all necessary info 
+# variable "penalty_factor" set by practitioner
+
+## Output
+
+# Optimised predicted trajectory recorded in variable "opt_ser"
+# A plot include three series 
+# -- target series in green 
+# -- base constructed series in blue
+# -- optimised constructred series in red
+
 # Scripts by Arman Hassanniakalager GitHub @hkalager
-# Last reviewed 10 March 2022
+# Last reviewed 11 March 2022
 
 # Key inputs
-setwd('~/Documents/GitHub/misc')
+setwd('~/Documents/GitHub/misc') # amend this as you see fit
 term_db <- read.csv('term_quotes.csv') # the database
-penalty_factor <- 1 
+penalty_factor <- 1 # Critical to tune the shape of the predicted path 
 # First replicate the series based on target series variations from the provided 
 # starting points 
 library(lubridate)
@@ -75,8 +90,9 @@ mean1=mean(x0[(last_observed_idx+1):size_ser])
 fun1 <- function (x)
 { y=term_db$Reference.curve
   x1 <- x
-  x1[1:2]=x0[1:2]
-  return (-cor(x1,y)+penalty_factor*(abs(mean(x1[first_na:last_observed_idx])-mean0)))
+  return (-cor(x1,y)+1000*(abs(mean(x1[1:2])-mean(x0[1:2])))+
+            penalty_factor*(abs(mean(x1[first_na:last_observed_idx])-mean0))+
+            penalty_factor/2*(abs(mean(x1[(last_observed_idx+1):size_ser])-mean1)))
 }
 
 res <- optim(x0,fun1)
