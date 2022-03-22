@@ -26,7 +26,6 @@ fun1 <- function(n)
       vv=vv+1
       if (length(list_prime)>0)
       {
-        highest_prime <- tail(list_prime,1)[[1]]
         cap_vv <- as.integer(v/2)
       }
       
