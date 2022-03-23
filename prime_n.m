@@ -3,7 +3,7 @@
 % number as prime
 % Script by Arman Hassanniakalager GitHub @hkalager
 tic;
-n=20;
+n=50;
 prime_list=fun1(n);
 disp(['The list of ',num2str(n),' first prime numbers is stored in variable',...
     '''prime_list''']) 
